@@ -7,7 +7,7 @@ Name:		%{name}
 Version:	%{version}
 Release:	%{release}
 Group:		Monitoring
-License:	ISC-style
+License:	Public Domain
 Url:		http://dev.inversepath.com/trac/tenshi/wiki/
 Source0:	%{name}-%{version}.tar.gz
 Source1:	tenshi.mandriva-init
