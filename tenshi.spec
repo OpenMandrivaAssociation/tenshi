@@ -6,7 +6,7 @@ Summary:	Tenshi log monitoring program
 Name:		%{name}
 Version:	%{version}
 Release:	%{release}
-Group:		System Environment/Daemons
+Group:		Monitoring
 License:	ISC-style
 Url:		http://dev.inversepath.com/trac/tenshi/wiki/
 Source0:	%{name}-%{version}.tar.gz
