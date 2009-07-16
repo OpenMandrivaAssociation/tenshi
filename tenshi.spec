@@ -42,6 +42,8 @@ rm -rf %{buildroot}%{_sysconfdir}/%{name}
 install -m755 %{SOURCE1} %{buildroot}%{_initrddir}/%{name}
 install -m755 %{SOURCE2} %{buildroot}%{_sysconfdir}/%{name}.conf
 touch %{buildroot}/var/run/%{name}/%{name}.pid
+mkdir -p %{buildroot}/var/log/
+mkfifo %{buildroot}/var/log/tenshi.fifo
 
 %pre
 %_pre_useradd %{name} /dev/null /sbin/nologin
@@ -49,7 +51,19 @@ touch %{buildroot}/var/run/%{name}/%{name}.pid
 %post
 %_post_service %{name}
 [[ -e /var/log/tenshi.fifo ]] || mkfifo /var/log/tenshi.fifo
-%_post_syslogadd /var/log/tenshi.fifo -s s_sys 
+cat <<EOF
+Please setup the Tenshi's facility in the syslog configuration file.
+The default facility: 
+EOF
+%_post_syslogadd /var/log/tenshi.fifo -s s_sys
+cat <<EOF
+
+I use without a facilty and the Tenshi alert me all problem 
+but it may flooding in admin's mailbox.
+Make up your mind.
+
+Best regards: Gergely Lonyai
+EOF
 
 %preun
 %_preun_service %{name}
@@ -69,6 +83,7 @@ rm -f /var/log/tensi.fifo
 %dir %attr(755,root,root) %{_sysconfdir}/%{name}.d
 %dir %attr(755,tenshi,tenshi) /var/run/%{name}
 %ghost %attr(600,tenshi,tenshi) /var/run/%{name}/%{name}.pid
+%attr(755,root,root) /var/log/tenshi.fifo
 
 %clean
 rm -rf %{buildroot}
