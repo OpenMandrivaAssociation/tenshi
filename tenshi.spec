@@ -1,6 +1,6 @@
 %define	name tenshi
 %define	version 0.10
-%define	release %mkrel 0.1
+%define	release %mkrel 0.3
 
 Summary:	Tenshi log monitoring program
 Name:		%{name}
@@ -11,6 +11,7 @@ License:	Public Domain
 Url:		http://dev.inversepath.com/trac/tenshi/wiki/
 Source0:	%{name}-%{version}.tar.gz
 Source1:	tenshi.mandriva-init
+Source2:	tenshi.mandriva-conf
 Patch0:		tenshi-mdv.buildfix.diff
 Requires:	perl
 Buildroot:	%{_tmppath}/%{name}-buildroot
@@ -22,7 +23,7 @@ on the matches. The regular expressions are assigned to queues which
 have an alert interval and a list of mail recipients.
 
 %prep
-%setup
+%setup -q
 %patch0 -p1
 
 %build
@@ -39,20 +40,23 @@ mkdir -p %{buildroot}/var/run/%{name}/
 #make DESTDIR=%{buildroot} mandir=%{_mandir} install
 
 install -m755 %{SOURCE1} %{buildroot}%{_initrddir}/%{name}
+install -m755 %{SOURCE2} %{buildroot}%{_initrddir}/%{name}
 touch %{buildroot}%{_sysconfdir}/sysconfig/%{name}
 touch %{buildroot}/var/run/%{name}/%{name}.pid
+
 
 %pre
 %_pre_useradd %{name} /dev/null /sbin/nologin
 
 %post
-%_preun_service %{name}
+%_post_service %{name}
+mkfifo /var/log/tenshi.fifo
+%_post_syslogadd /var/log/tenshi.fifo -s s_sys 
 
-#--------------------------------------------------------------------------------
-#  Take tenshi out of runlevels
-#--------------------------------------------------------------------------------
 %preun
 %_preun_service %{name}
+%_preun_syslogdel 
+rm -f /var/log/tensi.fifo
 
 %postun
 %_postun_userdel %{name}
