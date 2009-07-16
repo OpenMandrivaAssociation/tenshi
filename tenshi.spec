@@ -1,6 +1,6 @@
 %define	name tenshi
 %define	version 0.10
-%define	release %mkrel 0.4
+%define	release %mkrel 0.5
 
 Summary:	Tenshi log monitoring program
 Name:		%{name}
