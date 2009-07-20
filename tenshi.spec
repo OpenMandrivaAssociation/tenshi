@@ -1,6 +1,6 @@
 %define	name tenshi
 %define	version 0.11
-%define	release %mkrel 0.1
+%define	release %mkrel 0.2
 
 Summary:	Tenshi log monitoring program
 Name:		%{name}
@@ -43,7 +43,7 @@ install -m755 %{SOURCE1} %{buildroot}%{_initrddir}/%{name}
 install -m755 %{SOURCE2} %{buildroot}%{_sysconfdir}/%{name}.conf
 touch %{buildroot}/var/run/%{name}/%{name}.pid
 mkdir -p %{buildroot}/var/log/%{name}
-mkfifo %{buildroot}/var/log/%{name}/%{name}.fifo
+mkfifo %{buildroot}/var/log/%{name}.fifo
 
 %pre
 %_pre_useradd %{name} /dev/null /sbin/nologin
@@ -51,7 +51,7 @@ mkfifo %{buildroot}/var/log/%{name}/%{name}.fifo
 %post
 %_post_service %{name}
 if [ ! -n "`grep '/var/log/tenshi.fifo' %{_sysconfdir}/security/msec/perms.conf`" ] ; then
-	echo "/var/log/tenshi.fifo	tenshi.current 640" >> \
+	echo "/var/log/tenshi.fifo	current.tenshi 640" >> \
 		%{_sysconfdir}/security/msec/perms.conf
 fi
 
@@ -60,7 +60,8 @@ cat << EOF >> /etc/syslog-ng.conf
 # BEGIN: Automatically added by tenshi installation
 destination d_tenshi {
 	pipe("/var/log/tenshi.fifo"
-	owner("tenshi")
+	group(tenshi)
+	perm(0640)
 	);
 };
 filter f_level_tenshi { level(debug..emerg); };
@@ -96,9 +97,8 @@ fi
 %{_mandir}/man8/%{name}.8*
 %dir %attr(755,root,root) %{_sysconfdir}/%{name}.d
 %dir %attr(755,tenshi,tenshi) /var/run/%{name}
-%dir %attr(755,tenshi,tenshi) /var/log/%{name}
 %ghost %attr(600,tenshi,tenshi) /var/run/%{name}/%{name}.pid
-%attr(755,root,tenshi) /var/log/%{name}/%{name}.fifo
+%attr(644,root,tenshi) /var/log/%{name}.fifo
 
 %clean
 rm -rf %{buildroot}
