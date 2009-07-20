@@ -1,6 +1,6 @@
 %define	name tenshi
-%define	version 0.10
-%define	release %mkrel 0.5
+%define	version 0.11
+%define	release %mkrel 0.1
 
 Summary:	Tenshi log monitoring program
 Name:		%{name}
@@ -9,7 +9,7 @@ Release:	%{release}
 Group:		Monitoring
 License:	Public Domain
 Url:		http://dev.inversepath.com/trac/tenshi/wiki/
-Source0:	%{name}-%{version}.tar.gz
+Source0:	http://dev.inversepath.com/download/%{name}/%{name}-%{version}.tar.gz
 Source1:	tenshi.mandriva-init
 Source2:	tenshi.mandriva-conf
 Patch0:		tenshi-mdv.buildfix.diff
@@ -42,33 +42,47 @@ rm -rf %{buildroot}%{_sysconfdir}/%{name}
 install -m755 %{SOURCE1} %{buildroot}%{_initrddir}/%{name}
 install -m755 %{SOURCE2} %{buildroot}%{_sysconfdir}/%{name}.conf
 touch %{buildroot}/var/run/%{name}/%{name}.pid
-mkdir -p %{buildroot}/var/log/
-mkfifo %{buildroot}/var/log/tenshi.fifo
+mkdir -p %{buildroot}/var/log/%{name}
+mkfifo %{buildroot}/var/log/%{name}/%{name}.fifo
 
 %pre
 %_pre_useradd %{name} /dev/null /sbin/nologin
 
 %post
 %_post_service %{name}
-[[ -e /var/log/tenshi.fifo ]] || mkfifo /var/log/tenshi.fifo
-cat <<EOF
-Please setup the Tenshi's facility in the syslog configuration file.
-The default facility: 
-EOF
-%_post_syslogadd /var/log/tenshi.fifo -s s_sys
-cat <<EOF
+if [ ! -n "`grep '/var/log/tenshi.fifo' %{_sysconfdir}/security/msec/perms.conf`" ] ; then
+	echo "/var/log/tenshi.fifo	tenshi.current 640" >> \
+		%{_sysconfdir}/security/msec/perms.conf
+fi
 
-I use without a facilty and the Tenshi alert me all problem 
-but it may flooding in admin's mailbox.
-Make up your mind.
-
-Best regards: Gergely Lonyai
+if [ ! -n "`grep '# BEGIN: Automatically added by tenshi installation' /etc/syslog-ng.conf`" ] ; then
+cat << EOF >> /etc/syslog-ng.conf
+# BEGIN: Automatically added by tenshi installation
+destination d_tenshi {
+	pipe("/var/log/tenshi.fifo"
+	owner("tenshi")
+	);
+};
+filter f_level_tenshi { level(debug..emerg); };
+log { source(s_sys); filter(f_level_tenshi); destination(d_tenshi); };
+# END
 EOF
+
+elif [ ! -n "`grep '# BEGIN: Automatically added by tenshi installation' /etc/syslog.conf`" ] ; then
+cat << EOF >> /etc/syslog.conf
+# BEGIN: Automatically added by tenshi installation
+*.*					-/var/log/tenshi.fifo
+# END
+EOF
+
+else
+	echo "Not found the syslog daemon's config file."
+	echo "Please setup with your hand."
+fi
 
 %preun
 %_preun_service %{name}
 %_preun_syslogdel 
-rm -f /var/log/tensi.fifo
 
 %postun
 %_postun_userdel %{name}
@@ -82,8 +96,9 @@ rm -f /var/log/tensi.fifo
 %{_mandir}/man8/%{name}.8*
 %dir %attr(755,root,root) %{_sysconfdir}/%{name}.d
 %dir %attr(755,tenshi,tenshi) /var/run/%{name}
+%dir %attr(755,tenshi,tenshi) /var/log/%{name}
 %ghost %attr(600,tenshi,tenshi) /var/run/%{name}/%{name}.pid
-%attr(755,root,root) /var/log/tenshi.fifo
+%attr(755,root,tenshi) /var/log/%{name}/%{name}.fifo
 
 %clean
 rm -rf %{buildroot}
