@@ -1,6 +1,6 @@
 %define	name tenshi
-%define	version 0.11
-%define	release %mkrel 0.2
+%define	version 0.12
+%define	release %mkrel 0.1
 
 Summary:	Tenshi log monitoring program
 Name:		%{name}
@@ -8,7 +8,7 @@ Version:	%{version}
 Release:	%{release}
 Group:		Monitoring
 License:	Public Domain
-Url:		http://dev.inversepath.com/trac/tenshi/wiki/
+Url:		http://www.inversepath.com/tenshi.html
 Source0:	http://dev.inversepath.com/download/%{name}/%{name}-%{version}.tar.gz
 Source1:	tenshi.mandriva-init
 Source2:	tenshi.mandriva-conf
