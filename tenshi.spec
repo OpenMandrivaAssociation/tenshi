@@ -1,6 +1,6 @@
 %define	name tenshi
 %define	version 0.12
-%define	release %mkrel 0.1
+%define	release %mkrel 0.2
 
 Summary:	Tenshi log monitoring program
 Name:		%{name}
@@ -69,15 +69,23 @@ log { source(s_sys); filter(f_level_tenshi); destination(d_tenshi); };
 # END
 EOF
 
-elif [ ! -n "`grep '# BEGIN: Automatically added by tenshi installation' /etc/syslog.conf`" ] ; then
-cat << EOF >> /etc/syslog.conf
+elif [ ! -n "`grep '# BEGIN: Automatically added by tenshi installation' %{_sysconfdir}/syslog.conf`" ] ; then
+cat << EOF >> %{_sysconfdir}/syslog.conf
 # BEGIN: Automatically added by tenshi installation
 *.*					-/var/log/tenshi.fifo
 # END
 EOF
 
+elif [ -d %{_sysconfdir}/rsyslog.d ] ; then
+	if [ ! -e %{_sysconfdir}/rsyslog.d/tenshi.conf ] ; then
+		cat << EOF >> %{_sysconfdir}/rsyslog.d/tenshi.conf
+# Create by tenshi install
+*.* |/var/log/tenshi.fifo
+EOF
+	fi
+
 else
-	echo "Not found the syslog daemon's config file."
+	echo "Not found your syslog daemon's config file."
 	echo "Please setup with your hand."
 fi
 
@@ -87,6 +95,9 @@ fi
 
 %postun
 %_postun_userdel %{name}
+if [ ! -e %{_sysconfdir}/rsyslog.d/tenshi.conf ] ; then
+	rm -f %{_sysconfdir}/rsyslog.d/tenshi.conf
+fi
 
 %files
 %defattr(644,root,root,755)
