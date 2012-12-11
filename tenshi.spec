@@ -114,3 +114,42 @@ fi
 %clean
 rm -rf %{buildroot}
 
+
+
+%changelog
+* Wed Nov 17 2010 Lonyai Gergely <aleph@mandriva.org> 0.12-0.2mdv2011.0
++ Revision: 598319
+- Add rsyslog support.
+
+* Fri Sep 17 2010 Lonyai Gergely <aleph@mandriva.org> 0.12-0.1mdv2011.0
++ Revision: 579175
+- 0.12
+
+* Mon Jul 20 2009 Lonyai Gergely <aleph@mandriva.org> 0.11-0.2mdv2010.0
++ Revision: 398064
+- fix in config file and %%post
+
+* Mon Jul 20 2009 Lonyai Gergely <aleph@mandriva.org> 0.11-0.1mdv2010.0
++ Revision: 398038
+- update to 0.11
+
+* Thu Jul 16 2009 Lonyai Gergely <aleph@mandriva.org> 0.10-0.5mdv2010.0
++ Revision: 396577
+- fix release problem
+- fix syslog settings
+
+* Thu Jul 16 2009 Lonyai Gergely <aleph@mandriva.org> 0.10-0.4mdv2010.0
++ Revision: 396564
+- fix the init script
+
+* Thu Jul 16 2009 Lonyai Gergely <aleph@mandriva.org> 0.10-0.3mdv2010.0
++ Revision: 396543
+- update the init script
+
+* Wed Jul 15 2009 Lonyai Gergely <aleph@mandriva.org> 0.10-0.1mdv2010.0
++ Revision: 396205
+- fix licence type
+- fix group name
+- initial version is 0.10
+- create tenshi
+
