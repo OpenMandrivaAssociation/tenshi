@@ -2,7 +2,7 @@
 %define	version 0.12
 %define	release %mkrel 0.2
 
-Summary:	Tenshi log monitoring program
+Summary:	Log monitoring program
 Name:		%{name}
 Version:	%{version}
 Release:	%{release}
