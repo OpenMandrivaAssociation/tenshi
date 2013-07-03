@@ -1,11 +1,7 @@
-%define	name tenshi
-%define	version 0.12
-%define	release %mkrel 0.2
-
 Summary:	Log monitoring program
-Name:		%{name}
-Version:	%{version}
-Release:	%{release}
+Name:		tenshi
+Version:	0.12
+Release:	3
 Group:		Monitoring
 License:	Public Domain
 Url:		http://www.inversepath.com/tenshi.html
@@ -14,7 +10,8 @@ Source1:	tenshi.mandriva-init
 Source2:	tenshi.mandriva-conf
 Patch0:		tenshi-mdv.buildfix.diff
 Requires:	perl
-Buildroot:	%{_tmppath}/%{name}-%{version}
+
+%define debug_package %{nil}
 
 %description
 tenshi is a log monitoring program, designed to watch one or more log
@@ -29,7 +26,6 @@ have an alert interval and a list of mail recipients.
 %build
 
 %install
-rm -rf %{buildroot}
 mkdir -p %{buildroot}%{_initrddir}
 mkdir -p %{buildroot}%{_sysconfdir}/%{name}.d
 mkdir -p %{buildroot}%{_sysconfdir}/sysconfig
