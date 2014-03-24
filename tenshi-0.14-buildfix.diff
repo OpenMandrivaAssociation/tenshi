@@ -1,6 +1,6 @@
-diff -U2 --recursive tenshi-0.10.orig/Makefile tenshi-0.10/Makefile
---- tenshi-0.10.orig/Makefile	2008-03-05 23:53:56.000000000 +0100
-+++ tenshi-0.10/Makefile	2009-07-15 11:10:38.000000000 +0200
+diff -Naur tenshi-0.14.orig/Makefile tenshi-0.14/Makefile
+--- tenshi-0.14.orig/Makefile	2014-03-24 16:32:09.937824990 +0400
++++ tenshi-0.14/Makefile	2014-03-24 16:33:28.880829538 +0400
 @@ -5,12 +5,12 @@
  
  bindir = /usr/sbin
@@ -15,17 +15,20 @@ diff -U2 --recursive tenshi-0.10.orig/Makefile tenshi-0.10/Makefile
 +SAMPLES = tenshi.conf tenshi.redhat-init
  BIN = Makefile tenshi
  MAN = tenshi.8
-
-@@ -36,7 +36,7 @@
+ 
+@@ -35,10 +35,10 @@
+ install:
  	install -D tenshi ${DESTDIR}${bindir}/tenshi
  	[ -f ${DESTDIR}${sysconfdir}/tenshi/tenshi.conf ] || \
 -		install -g root -m 0644 -D tenshi.conf ${DESTDIR}${sysconfdir}/tenshi/tenshi.conf
 -	install -d ${DESTDIR}${docdir}
 -	install -m 0644 ${DOCS} ${DESTDIR}${docdir}/
--	install -g root -m 0644 tenshi.8 ${DESTDIR}${mandir}/man8/
--	install -g root -m 755 -d ${DESTDIR}${libdir}
 +		install -m 0644 -D tenshi.conf ${DESTDIR}${sysconfdir}/tenshi/tenshi.conf
 +#	install -d ${DESTDIR}${docdir}
 +#	install -m 0644 ${DOCS} ${DESTDIR}${docdir}/
+ 	[ -d ${DESTDIR}${mandir}/man8 ] || \
+ 		install -d ${DESTDIR}${mandir}/man8
+-	install -g root -m 0644 tenshi.8 ${DESTDIR}${mandir}/man8/
+-	install -g root -m 755 -d ${DESTDIR}${libdir}
 +	install -m 0644 tenshi.8 ${DESTDIR}${mandir}/man8/
 +	install -m 755 -d ${DESTDIR}${libdir}
