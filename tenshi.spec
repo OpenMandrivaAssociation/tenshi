@@ -1,12 +1,12 @@
 Summary:	Log monitoring program
 Name:		tenshi
-Version:	0.14
+Version:	0.15
 Release:	1
 Group:		Monitoring
 License:	Public Domain
 Url:		http://www.inversepath.com/tenshi.html
 Source0:	http://dev.inversepath.com/download/%{name}/%{name}-%{version}.tar.gz
-Source1:	tenshi.mandriva-init
+Source1:	tenshi.service
 Source2:	tenshi.mandriva-conf
 Patch0:		tenshi-0.14-buildfix.diff
 Requires:	perl
@@ -26,7 +26,7 @@ have an alert interval and a list of mail recipients.
 %build
 
 %install
-mkdir -p %{buildroot}%{_initrddir}
+mkdir -p %{buildroot}%{_unitdir}
 mkdir -p %{buildroot}%{_sysconfdir}/%{name}.d
 mkdir -p %{buildroot}%{_sysconfdir}/sysconfig
 mkdir -p %{buildroot}%{_mandir}/man8/
@@ -35,17 +35,19 @@ mkdir -p %{buildroot}/var/run/%{name}/
 %makeinstall
 
 rm -rf %{buildroot}%{_sysconfdir}/%{name}
-install -m755 %{SOURCE1} %{buildroot}%{_initrddir}/%{name}
+install -m0644 -D %{SOURCE1} %{buildroot}%{_unitdir}/%{name}.service
 install -m755 %{SOURCE2} %{buildroot}%{_sysconfdir}/%{name}.conf
 touch %{buildroot}/var/run/%{name}/%{name}.pid
 mkdir -p %{buildroot}/var/log/%{name}
 mkfifo %{buildroot}/var/log/%{name}.fifo
 
+sed "s:sysconfig:%{_sysconfdir}/sysconfig:" -i %{buildroot}%{_unitdir}/%{name}.service
+
 %pre
 %_pre_useradd %{name} /dev/null /sbin/nologin
 
 %post
-%_post_service %{name}
+%systemd_post %{name}
 if [ ! -n "`grep '/var/log/tenshi.fifo' %{_sysconfdir}/security/msec/perms.conf`" ] ; then
 	echo "/var/log/tenshi.fifo	current.tenshi 640" >> \
 		%{_sysconfdir}/security/msec/perms.conf
@@ -86,7 +88,7 @@ else
 fi
 
 %preun
-%_preun_service %{name}
+%systemd_preun %{name}
 %_preun_syslogdel 
 
 %postun
@@ -99,7 +101,7 @@ fi
 %defattr(644,root,root,755)
 %doc README INSTALL CREDITS LICENSE Changelog FAQ tenshi.conf
 %attr(644,root,root) %config(noreplace) %{_sysconfdir}/%{name}.conf
-%attr(755,root,root) %config(noreplace) %{_initrddir}/%{name}
+%attr(0644,root,root) %{_unitdir}/%{name}.service
 %attr(755,root,root) %{_bindir}/%{name}
 %{_mandir}/man8/%{name}.8*
 %dir %attr(755,root,root) %{_sysconfdir}/%{name}.d

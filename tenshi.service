@@ -1,0 +1,13 @@
+[Unit]
+Description=log monitor daemon
+After=syslog.target
+
+[Service]
+Type=simple
+Environment=CONF_FILE=/etc/tenshi.conf
+EnvironmentFile=-sysconfig/tenshi
+ExecStart=/usr/bin/tenshi -f -c ${CONF_FILE} -P /var/run/tenshi/tenshi.pid
+PIDFile=/var/run/tenshi/tenshi.pid
+
+[Install]
+WantedBy=multi-user.target
