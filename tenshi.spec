@@ -1,7 +1,7 @@
 Summary:	Log monitoring program
 Name:		tenshi
 Version:	0.15
-Release:	1
+Release:	2
 Group:		Monitoring
 License:	Public Domain
 Url:		http://www.inversepath.com/tenshi.html
