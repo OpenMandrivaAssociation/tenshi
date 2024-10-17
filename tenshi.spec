@@ -4,7 +4,7 @@ Version:	0.15
 Release:	2
 Group:		Monitoring
 License:	Public Domain
-Url:		http://www.inversepath.com/tenshi.html
+Url:		https://www.inversepath.com/tenshi.html
 Source0:	http://dev.inversepath.com/download/%{name}/%{name}-%{version}.tar.gz
 Source1:	tenshi.service
 Source2:	tenshi.mandriva-conf
